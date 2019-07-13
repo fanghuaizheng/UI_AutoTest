@@ -53,6 +53,9 @@ public class ExcelUtil {
         //如果单元格的内容为数字类型，则使用getNumericCellValue()方法获取单元格的内容
         //注意getNumericCell方法返回值为double类型，转换字符串类型必须在cell.getNumericCellValue()前面加""，用于强制转换double类型
         //到String类型。不加""则会抛出double类型无法转换到String类型的异常
+        if (cell==null){
+            return "这行没有数据了";
+        }
         String cellData = cell.getCellType()==XSSFCell.CELL_TYPE_STRING?cell.getStringCellValue()+
                 "":String.valueOf(Math.round(cell.getNumericCellValue()));
 

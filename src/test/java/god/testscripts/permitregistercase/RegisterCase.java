@@ -1,6 +1,8 @@
 package god.testscripts.permitregistercase;
 
 import god.util.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +11,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -48,8 +52,9 @@ public class RegisterCase {
         String LoginPwd = ExcelUtil.getCellData(i,2);//注册密码
         String MailAddr = ExcelUtil.getCellData(i,3);//注册邮箱
         DragScrollBar.dragToBottom(driver);
-        Integer[] list = {890, 822, 70, 25};
-//        String verCode = IdentifiVerifiCode.getCode(driver,list,"image","code");//验证编码
+//        Integer[] list = {890, 822, 70, 25};
+        Integer[] list = {444, 1334, 514, 1359};
+        String verCode = IdentifiVerifiCode.getCode(driver,list,"image","code");//验证编码
         List<String> list1 = GetCompanyInfo.getCompanyInfo(EnterName);
         String EnterAddress = list1.get(1);//注册地址
         String ProductAddress = EnterAddress;//生产经营场所地址
@@ -96,13 +101,77 @@ public class RegisterCase {
         driver.findElement(By.id("LoginPwd")).sendKeys(LoginPwd);
         driver.findElement(By.id("ReLoginPwd")).sendKeys(LoginPwd);
         driver.findElement(By.id("MailAddr")).sendKeys(MailAddr);
-        driver.findElement(By.id("verCode")).sendKeys("123");
+        driver.findElement(By.id("verCode")).sendKeys(verCode);
 
-        DragScrollBar.dragToEleBot(driver,driver.findElement(By.xpath("//dd[@id='td_1']/input")));
-        driver.findElement(By.name("imgfile")).sendKeys(imgfile);
-//        driver.findElement(By.cssSelector("staging.pd2")).click();
+        Thread.sleep(5000);
+        driver.findElement(By.xpath("//*[@id=\"td_1\"]/input[2]")).click();
+        Thread.sleep(1000);
+
+        selectImg(EnterName);
+
+        Thread.sleep(10000);
+        try {
+            int timeIndex = 10;
+            while (StringUtils.isBlank(driver.findElement(By.id("imgfile")).getText())){
+                System.out.println("选择图片");
+                Thread.sleep(timeIndex*1000);
+
+                driver.findElement(By.xpath("//*[@id=\"td_1\"]/input[2]")).click();
+                selectImg(EnterName);
+                timeIndex+=10;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         driver.findElement(By.id("regBtn")).click();
+
+        try{
+
+            if (driver.findElement(By.cssSelector(".test1"))!=null){
+
+                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存失败\r\n","Utf-8",true);
+
+                System.out.println(EnterName+"保存失败");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Thread.sleep(10000L);
+
+//        driver.quit();
        
+
+    }
+//
+//    @Test
+//    public void startExec(){
+//        startUploadImg(System.getProperty("user.dir")+UploadImgUtils.HK);
+//    }
+
+
+    private void selectImg(String EnterName){
+        //开始自动上传命令
+        switch (EnterName){
+            case "菏泽市宝利泽航空服务有限公司":
+                startUploadImg(System.getProperty("user.dir")+UploadImgUtils.HK);break;
+            case "菏泽市新良市政服务有限公司":
+                startUploadImg(System.getProperty("user.dir")+UploadImgUtils.Zwfw);break;
+            case "菏泽华鑫民间融资登记服务有限公司":
+                startUploadImg(System.getProperty("user.dir")+UploadImgUtils.RZDJ);break;
+
+        }
+    }
+
+    private void startUploadImg(String imgfile){
+        Runtime rn = Runtime.getRuntime();
+        try {
+            rn.exec(imgfile);
+            System.out.println("执行完毕");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

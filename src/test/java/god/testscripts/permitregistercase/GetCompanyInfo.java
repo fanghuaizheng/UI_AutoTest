@@ -3,6 +3,7 @@ package god.testscripts.permitregistercase;
 import god.util.DragScrollBar;
 import god.util.DriverWait;
 import god.util.SetBrowserProperty;
+import god.util.WebdriverUtil;
 import org.apache.xmlbeans.impl.xb.xsdschema.LocalSimpleType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -20,7 +21,7 @@ public class GetCompanyInfo {
 
     public static List<String> getCompanyInfo(String companyName)throws Exception{
         List<String> list = new ArrayList<String>();
-        WebDriver driver = SetBrowserProperty.openChromeBrowser();//创建个默认最大化的谷歌浏览器
+        WebDriver driver = WebdriverUtil.chromeWebdriver();//创建个默认最大化的谷歌浏览器
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         driver.get("https://www.tianyancha.com");
         DriverWait.findElement(driver,By.id("home-main-search")).sendKeys(companyName);
@@ -110,8 +111,9 @@ public class GetCompanyInfo {
         else if (regAddr.contains("东明县")){
             country = "东明县";
             zipCode = "274500";
-        }else {
-            return null;
+        }else {//设置默认值
+            country = "市辖区";
+            zipCode = "274000";
         }
 
         list.add(country);
