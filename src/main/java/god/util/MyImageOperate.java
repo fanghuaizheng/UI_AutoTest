@@ -31,7 +31,16 @@ public class MyImageOperate {
         int width = bufImage.getWidth();
         int height = bufImage.getHeight();
 
-        BufferedImage subimage = bufImage.getSubimage(x, y, w, h);
+        Double wi =width*0.447;
+
+        Integer sx = wi.intValue();
+
+        Double yi = height*0.83;
+
+        Integer yii = yi.intValue();
+
+
+        BufferedImage subimage = bufImage.getSubimage(sx, yii, w, h);
 
         ImageIO.write(subimage,"PNG",new File(targetPath));
 
@@ -43,7 +52,8 @@ public class MyImageOperate {
         String src = "src/test/screenshot/image.png";
         String tar = "src/test/screenshot/code.png";
 
-        cut(src,tar,444,480,80,30);
+        //1366*623
+        cut(src,tar,610,515,80,30);
 
 
 

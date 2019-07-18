@@ -14,7 +14,7 @@ public class IdentifiVerifiCode {
         new GetScreenshot(srcimage,driver);
 
         try {
-            MyImageOperate.cut(imagepath,codepath,444,480,80,30);
+            MyImageOperate.cut(imagepath,codepath,610,515,80,30);
         } catch (IOException e) {
             e.printStackTrace();
         }

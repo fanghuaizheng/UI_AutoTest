@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +43,9 @@ public class RegisterCase {
     }
 
     private void registerAction(int i) throws Exception {
+        driver.manage().window().maximize();
         driver.get("http://permit.mee.gov.cn/permitExt/outside/registration.jsp");
+
         driver.switchTo().alert().accept();
 
         DriverWait.findElement(driver, By.id("regBtn"));
@@ -91,10 +94,15 @@ public class RegisterCase {
         driver.findElement(By.id("EnterAddress")).sendKeys(EnterAddress);
         driver.findElement(By.id("ProductAddress")).sendKeys(ProductAddress);
         driver.findElement(By.id("ZipCode")).sendKeys(ZipCode);
+        Thread.sleep(1000);
         SelectSigleBox.chooseOption(driver,By.id("province"),province);
+        Thread.sleep(1000);
         SelectSigleBox.chooseOption(driver,By.id("city"),city);
+        Thread.sleep(1000);
         SelectSigleBox.chooseOption(driver,By.id("counties"),counties);
+        Thread.sleep(1000);
         SelectSigleBox.chooseOption(driver,By.id("reiver"),reiver);
+        Thread.sleep(1000);
         driver.findElement(By.id("SocietyCode")).sendKeys(SocietyCode);
         driver.findElement(By.id("CSocietyCode")).sendKeys(CSocietyCode);
         driver.findElement(By.id("LoginName")).sendKeys(LoginName);
@@ -109,20 +117,19 @@ public class RegisterCase {
 
         selectImg(EnterName);
 
-        Thread.sleep(10000);
+        Thread.sleep(2000);
         try {
-            int timeIndex = 10;
             while (StringUtils.isBlank(driver.findElement(By.id("imgfile")).getText())){
-                System.out.println("选择图片");
-                Thread.sleep(timeIndex*1000);
+                Thread.sleep(8000);
 
                 driver.findElement(By.xpath("//*[@id=\"td_1\"]/input[2]")).click();
                 selectImg(EnterName);
-                timeIndex+=10;
+                Thread.sleep(2000);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+        Thread.sleep(2000);
 
         driver.findElement(By.id("regBtn")).click();
 
@@ -132,13 +139,28 @@ public class RegisterCase {
 
                 FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存失败\r\n","Utf-8",true);
 
-                System.out.println(EnterName+"保存失败");
+                System.out.println(new Date()+"\t"+EnterName+"保存失败");
+            }else {
+                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存成功\r\n","Utf-8",true);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        Thread.sleep(10000L);
+        try{
+
+            if (driver.findElement(By.tagName("font"))!=null){
+
+                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存失败 \t"+driver.findElement(By.tagName("font")).getText()+"\r\n","Utf-8",true);
+
+            }else {
+                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存成功\r\n","Utf-8",true);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Thread.sleep(2000L);
 
 //        driver.quit();
        
