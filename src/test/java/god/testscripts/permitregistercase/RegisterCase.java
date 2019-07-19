@@ -3,6 +3,7 @@ package god.testscripts.permitregistercase;
 import god.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -117,31 +118,41 @@ public class RegisterCase {
 
         selectImg(EnterName);
 
-        Thread.sleep(2000);
-        try {
-            while (StringUtils.isBlank(driver.findElement(By.id("imgfile")).getText())){
-                Thread.sleep(8000);
+        Thread.sleep(8000);
 
-                driver.findElement(By.xpath("//*[@id=\"td_1\"]/input[2]")).click();
-                selectImg(EnterName);
-                Thread.sleep(2000);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        Thread.sleep(2000);
+
+//        try {
+//            while (StringUtils.isBlank(driver.findElement(By.id("imgfile")).getText())){
+//                Thread.sleep(2000);
+//
+//                driver.findElement(By.xpath("//*[@id=\"td_1\"]/input[2]")).click();
+//                selectImg(EnterName);
+//                Thread.sleep(8000);
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        Thread.sleep(2000);
 
         driver.findElement(By.id("regBtn")).click();
+
+        String time = DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss");
+        String filePath = "saveResult.txt";
+
+        StringBuilder content = new StringBuilder();
 
         try{
 
             if (driver.findElement(By.cssSelector(".test1"))!=null){
 
-                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存失败\r\n","Utf-8",true);
+                content.append(time).append("\t").append(EnterName).append("\t保存失败\n");
 
-                System.out.println(new Date()+"\t"+EnterName+"保存失败");
+//                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存失败\r\n","Utf-8",true);
+
+//                System.out.println(new Date()+"\t"+EnterName+"保存失败");
             }else {
-                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存成功\r\n","Utf-8",true);
+                content.append(time).append("\t").append(EnterName).append("\t保存成功\n");
+//                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存成功\r\n","Utf-8",true);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -151,14 +162,19 @@ public class RegisterCase {
 
             if (driver.findElement(By.tagName("font"))!=null){
 
-                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存失败 \t"+driver.findElement(By.tagName("font")).getText()+"\r\n","Utf-8",true);
+                content.append(time).append("\t").append(EnterName).append("\t保存失败 \t").append(driver.findElement(By.tagName("font")).getText()+"\r\n");
+
+//                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存失败 \t"+driver.findElement(By.tagName("font")).getText()+"\r\n","Utf-8",true);
 
             }else {
-                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存成功\r\n","Utf-8",true);
+                content.append(time).append("\t").append(EnterName).append("\t保存成功\r\n");
+//                FileUtils.write(new File("saveResult.txt"),EnterName+"\t保存成功\r\n","Utf-8",true);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        FileUtils.write(new File(filePath),content.toString(),"utf-8",true);
 
         Thread.sleep(2000L);
 
@@ -166,12 +182,6 @@ public class RegisterCase {
        
 
     }
-//
-//    @Test
-//    public void startExec(){
-//        startUploadImg(System.getProperty("user.dir")+UploadImgUtils.HK);
-//    }
-
 
     private void selectImg(String EnterName){
         //开始自动上传命令
